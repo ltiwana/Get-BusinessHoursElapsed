@@ -44,7 +44,7 @@ Function Get-BusinessHoursElapsed {
     }
     else {
         Write-Verbose "First Date time is not between business hours"
-        Write-Verbose "Follwing Comparison Statement was used -> `"$FirstDate`" -ge `"$FirstDayStartTime`" -and `"$FirstDate`" -le `"$FirstDayEndTime`""
+        Write-Verbose "Following Comparison Statement was used -> `"$FirstDate`" -ge `"$FirstDayStartTime`" -and `"$FirstDate`" -le `"$FirstDayEndTime`""
         $FirstDateHours = New-TimeSpan -Hours "0"
     }
 
@@ -55,7 +55,7 @@ Function Get-BusinessHoursElapsed {
     }
     else {
         Write-Verbose "Last Date is not between business hours"
-        Write-Verbose "Follwing Comparison Statement was used -> `"$LastDate`" -ge `"$LastDayEndTime`" -and `"$LastDate`" -le `"$LastDayStartTime`""
+        Write-Verbose "Following Comparison Statement was used -> `"$LastDate`" -ge `"$LastDayEndTime`" -and `"$LastDate`" -le `"$LastDayStartTime`""
         if ($LastDate -ge $LastDayEndTime) {
             Write-Verbose "Last Date is after the End of Business Day so counting $TotalBusinessHours Business hours in"
             $LastDateHours = New-TimeSpan -Hours $TotalBusinessHours
