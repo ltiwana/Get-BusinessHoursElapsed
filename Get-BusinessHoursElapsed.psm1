@@ -31,12 +31,12 @@ Function Get-BusinessHoursElapsed {
     Write-Verbose "Setting Business Hours range for First Date"
     [DateTime]$FirstDayStartTime = get-date (get-date $FirstDate  -Format "yyyy/MM/dd $StartHours`:00:00")
     [DateTime]$FirstDayEndTime = get-date (get-date $FirstDate  -Format "yyyy/MM/dd $EndHours`:00:00")
-    Write-Verbose "First day Business Hours is between $FirstDayStartTime and $FirstDayEndTime"
+    Write-Verbose "First day Business Hours are between $FirstDayStartTime and $FirstDayEndTime"
 
     Write-Verbose "Setting Business Hours range for the Last Date"
     [DateTime]$LastDayStartTime = get-date (get-date $LastDate  -Format "yyyy/MM/dd $StartHours`:00:00")
     [DateTime]$LastDayEndTime = get-date (get-date $LastDate  -Format "yyyy/MM/dd $EndHours`:00:00")
-    Write-Verbose "Last day Business Hours is between $LastDayStartTime and $LastDayEndTime"
+    Write-Verbose "Last day Business Hours are between $LastDayStartTime and $LastDayEndTime"
 
     if ($FirstDate -ge $FirstDayStartTime -and $FirstDate -le $FirstDayEndTime) {
         $FirstDateHours = (New-TimeSpan -Start $FirstDate -End $FirstDayEndTime)
