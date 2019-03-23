@@ -140,11 +140,11 @@ Function Get-BusinessHoursElapsed {
         } while ($NoOfDays.ToString("yyyy-MM-dd") -ne $LastDate.AddDays(-1).ToString("yyyy-MM-dd"))
 
         Write-Verbose "Comparison was met"
-        Write-Verbose "Calculating hours for each day $(($AdditionalElapsedDays * $TotalBusinessHours)) and adding to $ElapsedTime"
-        $ElapsedTime = $ElapsedTime +  $(New-TimeSpan -Hours ($AdditionalElapsedDays * $TotalBusinessHours))
+        Write-Verbose "Calculating hours for each day ($(New-TimeSpan -Hours $($AdditionalElapsedDays * $TotalBusinessHours)) hours) and adding to hours for first and last date $ElapsedTime"
+        $ElapsedTime = $ElapsedTime + $(New-TimeSpan -Hours $($AdditionalElapsedDays * $TotalBusinessHours))
         #$ElapsedTime = [Math]::Ceiling($ElapsedTime.TotalHours)
         if ($ElapsedTime.Days -gt 0) {
-            $TotalHours = $ElapsedTime.Hours + ($ElapsedTime.Days * $TotalBusinessHours)
+            $TotalHours = $ElapsedTime.Hours + ($ElapsedTime.Days * 24)
             $ElapsedTime = "$TotalHours`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
         }
         else {
