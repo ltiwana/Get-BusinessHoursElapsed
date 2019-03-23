@@ -68,7 +68,7 @@ Function Get-BusinessHoursElapsed {
 
     $ElapsedTime =  $FirstDateHours + $LastDateHours
 
-    Write-Verbose "Checking First Date and Last Date"
+    Write-Verbose "Calculating hours between First Date and Last Date"
     if ($FirstDate.ToString("yyyy-MM-dd") -eq $LastDate.ToString("yyyy-MM-dd")) {
         
         Write-Verbose "First and Last Date are on the same day"
@@ -108,12 +108,15 @@ Function Get-BusinessHoursElapsed {
     }
     else {
 
+        Write-Verbose "First and Last days hours calculation completed"
+        Write-Verbose "Calculated hours: $ElapsedTime"
+        Write-Verbose "Calculating elapsed hours between first and last date"
         do {
 
             $NoOfDays = $NoOfDays.AddDays(1)
             Write-Verbose "Getting the Next day: $((get-date $NoOfDays -Format F))"
             Write-Verbose ("*" * ("$((get-date $NoOfDays -Format F))").Length)
-            Write-Verbose "Checking if it falls in weekday"
+            Write-Verbose "Checking if it falls in weekdays"
             
 
             if ($NoOfDays.DayOfWeek -gt 0 -and $NoOfDays.DayOfWeek -lt 6 -and $StatutoryHolidays.Dates -notcontains $(get-date $NoOfDays -UFormat  "%A, %B %d, %Y")) {
@@ -131,7 +134,8 @@ Function Get-BusinessHoursElapsed {
                 Write-Verbose "Note: >>>This is a weekend or holiday<<<, skipping..."
             }
             
-            Write-Verbose "Comparison statement: `"$($NoOfDays.ToString("yyyy-MM-dd"))`" -ne `"$($LastDate.AddDays(-1).ToString("yyyy-MM-dd")))`""
+            Write-Verbose "Calculation will stop when below comparison statement is met."
+            Write-Verbose "`"$($NoOfDays.ToString("yyyy-MM-dd"))`" -ne `"$($LastDate.AddDays(-1).ToString("yyyy-MM-dd"))`""
 
         } while ($NoOfDays.ToString("yyyy-MM-dd") -ne $LastDate.AddDays(-1).ToString("yyyy-MM-dd"))
 
