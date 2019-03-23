@@ -19,6 +19,7 @@ Function Get-BusinessHoursElapsed {
     }
 
     if (!$StatutoryHolidays) { Write-Warning "No Statutory Holidays were supplied"}
+    else { Write-Verbose "Bellow Statutory Holidays where supplied: `n$($StatutoryHolidays | Out-string)"}
     $StartHours = ($BusinessHours -split ",")[0].trim()
     $EndHours = ($BusinessHours -split ",")[1].trim()
     $TotalBusinessHours = (12 - $StartHours) + ($EndHours - 12)
@@ -38,24 +39,24 @@ Function Get-BusinessHoursElapsed {
     [DateTime]$LastDayEndTime = get-date (get-date $LastDate  -Format "yyyy/MM/dd $EndHours`:00:00")
     Write-Verbose "Last day Business Hours are between $LastDayStartTime and $LastDayEndTime"
 
-    if ($FirstDate -ge $FirstDayStartTime -and $FirstDate -le $FirstDayEndTime) {
+    if (($FirstDate -ge $FirstDayStartTime -and $FirstDate -le $FirstDayEndTime) -and ($FirstDate.DayOfWeek -notin 6..7) -and ($StatutoryHolidays -notcontains $(Get-Date $FirstDate -UFormat  "%A, %B %d, %Y"))) {
         $FirstDateHours = (New-TimeSpan -Start $FirstDate -End $FirstDayEndTime)
         Write-Verbose "Calculating First Day hours between `"$FirstDate`" and `"$FirstDayEndTime`": $FirstDateHours"
     }
     else {
-        Write-Verbose "First Date time is not between business hours"
-        Write-Verbose "Following Comparison Statement was used -> `"$FirstDate`" -ge `"$FirstDayStartTime`" -and `"$FirstDate`" -le `"$FirstDayEndTime`""
+        Write-Verbose "First Date time is not between business hours or falls on weekend or holidays"
+        Write-Verbose "Following Comparison Statement was used -> ((`"$FirstDate`" -ge `"$FirstDayStartTime`" -and `"$FirstDate`" -le `"$FirstDayEndTime`")) -and (`"$($FirstDate.DayOfWeek)`" -notin 6..7) -and (`"`$StatutoryHolidays`" -notcontains `"$(Get-Date $FirstDate -UFormat  "%A, %B %d, %Y")`")))"
         $FirstDateHours = New-TimeSpan -Hours "0"
     }
 
-    if ($LastDate -ge $LastDayStartTime -and $LastDate -le $LastDayEndTime) {
+    if (($LastDate -ge $LastDayStartTime -and $LastDate -le $LastDayEndTime) -and ($LastDate.DayOfWeek -notin 6..7) -and ($StatutoryHolidays -notcontains $(Get-Date $LastDate -UFormat  "%A, %B %d, %Y"))) {
         $LastDateHours = New-TimeSpan -Start $LastDayStartTime -End $LastDate
         Write-Verbose "Calculating Last Day hours between the `"$LastDayStartTime`" and `"$LastDate`": $LastDateHours"       
       
     }
     else {
         Write-Verbose "Last Date is not between business hours"
-        Write-Verbose "Following Comparison Statement was used -> `"$LastDate`" -ge `"$LastDayEndTime`" -and `"$LastDate`" -le `"$LastDayStartTime`""
+        Write-Verbose "Following Comparison Statement was used -> ((`"$LastDate`" -ge `"$LastDayEndTime`" -and `"$LastDate`" -le `"$LastDayStartTime`") -and (`"$($LastDate.DayOfWeek)`" -notin 6..7) -and (`"`$StatutoryHolidays`" -notcontains `"$(Get-Date $LastDate -UFormat  "%A, %B %d, %Y")`"))"
         if ($LastDate -ge $LastDayEndTime) {
             Write-Verbose "Last Date is after the End of Business Day so counting $TotalBusinessHours Business hours in"
             $LastDateHours = New-TimeSpan -Hours $TotalBusinessHours
@@ -84,22 +85,10 @@ Function Get-BusinessHoursElapsed {
 
     }
     elseif ($FirstDate.AddDays(1).ToString("yyyy-MM-dd") -eq $LastDate.ToString("yyyy-MM-dd")) {
-    #elseif ((New-TimeSpan -Start $FirstDate -End $LastDate).days -lt "1") {
+    
        
         Write-Verbose "Difference between the First Date and Last Date is less than one day"
         Write-Verbose "Comparison done -> `"$($FirstDate.AddDays(1).ToString("yyyy-MM-dd"))`" -eq `"$($LastDate.ToString("yyyy-MM-dd"))`""
-        #Write-Verbose "Calculating difference between First Date and End of the Day: $(New-TimeSpan -Start $FirstDate -End $FirstDayEndTime)"
-        #Write-Verbose "Calculating difference between the Start of Last Day and Last Date: $(New-TimeSpan -Start $LastDayStartTime -End $LastDate)"
-        #$ElapsedTime = (New-TimeSpan -Start $FirstDate -End $FirstDayEndTime) + (New-TimeSpan -Start $LastDayStartTime -End $LastDate)
-        #$ElapsedTime = [Math]::Ceiling($ElapsedTime.TotalHours)
-        #if ($ElapsedTime.Days -gt 0) {
-        #    $TotalHours = $ElapsedTime.Hours + ($ElapsedTime.Days * 12)
-        #    $ElapsedTime = "$TotalHours`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
-        #}
-        #else {
-        #    $ElapsedTime = "$($ElapsedTime.Hours)`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
-        #}
-        #Write-Verbose "Elapsed hours: $ElapsedTime"
         Write-Verbose "Returing the total hours"
         $ElapsedTime = "$($ElapsedTime.Hours)`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
         Write-Verbose "Elapsed hours: $ElapsedTime"
@@ -109,6 +98,7 @@ Function Get-BusinessHoursElapsed {
     else {
 
         Write-Verbose "First and Last days hours calculation completed"
+        #if ($NoOfDays.DayOfWeek -in 6..7 -or ($StatutoryHolidays -contains $FirstDate)) { Write-Verbose "Firt or Last date is during weekend or holidays"}
         Write-Verbose "Calculated hours: $ElapsedTime"
         Write-Verbose "Calculating elapsed hours between first and last date"
         do {
