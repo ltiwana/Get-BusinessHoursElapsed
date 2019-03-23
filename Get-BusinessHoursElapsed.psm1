@@ -119,7 +119,7 @@ Function Get-BusinessHoursElapsed {
             Write-Verbose "Checking if it falls in weekdays"
             
 
-            if ($NoOfDays.DayOfWeek -gt 0 -and $NoOfDays.DayOfWeek -lt 6 -and $StatutoryHolidays.Dates -notcontains $(get-date $NoOfDays -UFormat  "%A, %B %d, %Y")) {
+            if ($NoOfDays.DayOfWeek -gt 0 -and $NoOfDays.DayOfWeek -lt 6 -and $StatutoryHolidays -notcontains $(get-date $NoOfDays -UFormat  "%A, %B %d, %Y")) {
                 Write-Verbose "This is a WeekDay"
                 
                 Write-Verbose "Counting it for the Business Hours Calculations"
