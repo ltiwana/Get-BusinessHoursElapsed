@@ -13,6 +13,9 @@ Function Get-BusinessHoursElapsed {
         [array]$StatutoryHolidays
     )
 
+    $StartHours = ($BusinessHours -split ",")[0].trim()
+    $EndHours = ($BusinessHours -split ",")[1].trim()
+
     if ($EndHours -notin 13..23 -or $StartHours -notin 0..12) {
         Write-Error "Business hours are not in 24-Hours format. For example to specify Business Hours between 9 to 5 use folowig -BusinessHours `"9,17`""
         break
@@ -20,8 +23,7 @@ Function Get-BusinessHoursElapsed {
 
     if (!$StatutoryHolidays) { Write-Warning "No Statutory Holidays were supplied"}
     else { Write-Verbose "Bellow Statutory Holidays where supplied: `n$($StatutoryHolidays | Out-string)"}
-    $StartHours = ($BusinessHours -split ",")[0].trim()
-    $EndHours = ($BusinessHours -split ",")[1].trim()
+ 
     $TotalBusinessHours = (12 - $StartHours) + ($EndHours - 12)
 
     Write-Verbose "Supplied Business Hours are between $StartHours and $EndHours"
@@ -57,7 +59,7 @@ Function Get-BusinessHoursElapsed {
     else {
         Write-Verbose "Last Date is not between business hours"
         Write-Verbose "Following Comparison Statement was used -> ((`"$LastDate`" -ge `"$LastDayEndTime`" -and `"$LastDate`" -le `"$LastDayStartTime`") -and (`"$($LastDate.DayOfWeek)`" -notin 6..7) -and (`"`$StatutoryHolidays`" -notcontains `"$(Get-Date $LastDate -UFormat  "%A, %B %d, %Y")`"))"
-        if ($LastDate -ge $LastDayEndTime) {
+        if ($LastDate -ge $LastDayEndTime -and $FirstDate.ToString("yyyy-MM-dd") -ne $LastDate.ToString("yyyy-MM-dd")) {
             Write-Verbose "Last Date is after the End of Business Day so counting $TotalBusinessHours Business hours in"
             $LastDateHours = New-TimeSpan -Hours $TotalBusinessHours
         }
@@ -75,7 +77,7 @@ Function Get-BusinessHoursElapsed {
         Write-Verbose "First and Last Date are on the same day"
         Write-Verbose "Comparison done -> $($FirstDate.ToString("yyyy-MM-dd")) -eq $($LastDate.ToString("yyyy-MM-dd"))"
         Write-Verbose "Therefore, calculating just the hours"
-        $ElapsedTime = New-TimeSpan $FirstDate $LastDate
+        $ElapsedTime = New-TimeSpan $FirstDate $LastDayEndTime
 
         Write-Verbose "Returing the total hours"
         $ElapsedTime = "$($ElapsedTime.Hours)`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
@@ -140,7 +142,7 @@ Function Get-BusinessHoursElapsed {
         else {
             $ElapsedTime = "$($ElapsedTime.Hours)`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
         }
-        Write-Verbose "Elapsed hours: $ElapsedTime"
+        Write-Verbose "Elapsed Business Hours: $ElapsedTime"
         return $ElapsedTime
     }
 }
