@@ -77,11 +77,14 @@ Function Get-BusinessHoursElapsed {
         Write-Verbose "First and Last Date are on the same day"
         Write-Verbose "Comparison done -> $($FirstDate.ToString("yyyy-MM-dd")) -eq $($LastDate.ToString("yyyy-MM-dd"))"
         Write-Verbose "Therefore, calculating just the hours"
-        $ElapsedTime = New-TimeSpan $FirstDate $LastDayEndTime
+        $ElapsedTime = New-TimeSpan $FirstDate $LastDate
+        if ($LastDate -ge $LastDayEndTime) {
+            $ElapsedTime = New-TimeSpan $FirstDate $LastDayEndTime
+        }
+        
 
         Write-Verbose "Returing the total hours"
         $ElapsedTime = "$($ElapsedTime.Hours)`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
-        #$ElapsedTime = [Math]::Ceiling($ElapsedTime.TotalHours)
         Write-Verbose "Elapsed hours: $ElapsedTime"
         return $ElapsedTime
 
@@ -100,7 +103,6 @@ Function Get-BusinessHoursElapsed {
     else {
 
         Write-Verbose "First and Last days hours calculation completed"
-        #if ($NoOfDays.DayOfWeek -in 6..7 -or ($StatutoryHolidays -contains $FirstDate)) { Write-Verbose "Firt or Last date is during weekend or holidays"}
         Write-Verbose "Calculated hours: $ElapsedTime"
         Write-Verbose "Calculating elapsed hours between first and last date"
         do {
@@ -134,7 +136,6 @@ Function Get-BusinessHoursElapsed {
         Write-Verbose "Comparison was met"
         Write-Verbose "Calculating hours for each day ($(New-TimeSpan -Hours $($AdditionalElapsedDays * $TotalBusinessHours)) hours) and adding to hours for first and last date $ElapsedTime"
         $ElapsedTime = $ElapsedTime + $(New-TimeSpan -Hours $($AdditionalElapsedDays * $TotalBusinessHours))
-        #$ElapsedTime = [Math]::Ceiling($ElapsedTime.TotalHours)
         if ($ElapsedTime.Days -gt 0) {
             $TotalHours = $ElapsedTime.Hours + ($ElapsedTime.Days * 24)
             $ElapsedTime = "$TotalHours`:$($ElapsedTime.Minutes)`:$($ElapsedTime.Seconds)"
