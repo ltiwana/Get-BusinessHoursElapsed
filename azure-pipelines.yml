@@ -11,7 +11,8 @@ pool:
 
 steps:
 
-- powershell: 
+- powershell:
+    # checking if module file exists
     get-childitem "Get-BusinessHoursElapsed.psm1";
     import-module .\Get-BusinessHoursElapsed.psm1;
     $FirstDate = (get-date).AddDays(-3).ToString("yyyy-MM-dd hh:mm:ss tt");
@@ -21,4 +22,4 @@ steps:
     $SecondDate;
     $BusinessHours;
     Get-BusinessHoursElapsed -FirstDate $FirstDate -LastDate $SecondDate -BusinessHours $BusinessHours -Verbose;
-  displayName: 'Calculating Business hours'
+  displayName: 'Testing module'
