@@ -24,8 +24,8 @@ steps:
     $BusinessHours = "9,17";
 
     Write-Host "`n`nFirstDate = $FirstDate";
-    Write-Host "SecondDate = $SecondDate;
-    Write-Host "BusinessHours = $BusinessHours;
+    Write-Host "`nSecondDate = $SecondDate;
+    Write-Host "`nBusinessHours = $BusinessHours;
 
     Write-Host "`n`nStarting Business Hour calculation";
     Get-BusinessHoursElapsed -FirstDate $FirstDate -LastDate $SecondDate -BusinessHours $BusinessHours -Verbose;
