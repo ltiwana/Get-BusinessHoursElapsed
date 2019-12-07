@@ -1,0 +1,18 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- script: 'powershell -command "import-module Get-BusinessHoursElapsed.psm1"'
+  displayName: 'Run a one-line script'
+
+- script: |
+    Get-BusinessHoursElapsed -FirstDate $([datetime]"2019-03-19 11:06:16 PM") -LastDate $([datetime]"2019-03-22 11:06:16 PM") -BusinessHours "9,17"​ -StatutoryHolidays $allHolidays -Verbose
+  displayName: 'Run a multi-line script'
