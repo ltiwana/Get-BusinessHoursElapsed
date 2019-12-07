@@ -12,14 +12,21 @@ pool:
 steps:
 
 - powershell:
-    # checking if module file exists
+    write-host "Checking if module exists";
     get-childitem "Get-BusinessHoursElapsed.psm1";
-    import-module .\Get-BusinessHoursElapsed.psm1;
+
+    write-host "Importing module";
+    import-module .\Get-BusinessHoursElapsed.psm1 -verbose ; 
+
+    write-host "Setting required variables";
     $FirstDate = (get-date).AddDays(-3).ToString("yyyy-MM-dd hh:mm:ss tt");
     $SecondDate = Get-Date -Format "yyyy-MM-dd hh:mm:ss tt";
     $BusinessHours = "9,17";
-    $FirstDate;
-    $SecondDate;
-    $BusinessHours;
+
+    Write-Host "FirstDate = $FirstDate";
+    Write-Host "SecondDate = $SecondDate;
+    Write-Host "BusinessHours = $BusinessHours;
+
+    Write-Host "Starting Business Hour calculation";
     Get-BusinessHoursElapsed -FirstDate $FirstDate -LastDate $SecondDate -BusinessHours $BusinessHours -Verbose;
   displayName: 'Testing module'
