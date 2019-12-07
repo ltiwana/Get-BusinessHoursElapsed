@@ -10,11 +10,21 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- script: 
-    dir
-    powershell -command "import-module Get-BusinessHoursElapsed.psm1"
-  displayName: 'Run a one-line script'
 
-- script: |
-    Get-BusinessHoursElapsed -FirstDate $([datetime]"2019-03-19 11:06:16 PM") -LastDate $([datetime]"2019-03-22 11:06:16 PM") -BusinessHours "9,17"​ -StatutoryHolidays $allHolidays -Verbose
-  displayName: 'Run a multi-line script'
+- powershell:
+    write-host "`n`nChecking if module exists";
+    test-path "Get-BusinessHoursElapsed.psm1";
+
+    write-host "`n`nImporting module";
+    import-module .\Get-BusinessHoursElapsed.psm1 -verbose ; 
+
+    write-host "`n`nSetting required variables";
+    $FirstDate = (get-date).AddDays(-3).ToString("yyyy-MM-dd hh:mm:ss tt");
+    $SecondDate = Get-Date -Format "yyyy-MM-dd hh:mm:ss tt";
+    $BusinessHours = "9,17";
+
+    Write-Host "`nFirstDate = $FirstDate  `nSecondDate = $SecondDate  `nBusinessHours = $BusinessHours";
+
+    Write-Host "`n`nStarting Business Hour calculation";
+    Get-BusinessHoursElapsed -FirstDate $FirstDate -LastDate $SecondDate -BusinessHours $BusinessHours -Verbose;
+  displayName: 'Testing module'
