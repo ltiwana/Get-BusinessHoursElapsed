@@ -10,7 +10,9 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- script: 'powershell -command "import-module Get-BusinessHoursElapsed.psm1"'
+- script: 
+    dir
+    powershell -command "import-module Get-BusinessHoursElapsed.psm1"
   displayName: 'Run a one-line script'
 
 - script: |
