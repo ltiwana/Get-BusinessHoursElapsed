@@ -13,7 +13,7 @@ steps:
 
 - powershell:
     write-host "`n`nChecking if module exists";
-    get-childitem "Get-BusinessHoursElapsed.psm1";
+    test-path "Get-BusinessHoursElapsed.psm1";
 
     write-host "`n`nImporting module";
     import-module .\Get-BusinessHoursElapsed.psm1 -verbose ; 
