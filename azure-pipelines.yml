@@ -19,6 +19,6 @@ steps:
     $BusinessHours = "9,17";
     $FirstDate;
     $SecondDate;
-    $BusinessHours
+    $BusinessHours;
     Get-BusinessHoursElapsed -FirstDate $FirstDate -LastDate $SecondDate -BusinessHours $BusinessHours -Verbose;
   displayName: 'Calculating Business hours'
