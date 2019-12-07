@@ -10,16 +10,14 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- script: 
-    dir
-    powershell
+- powershell:  
     get-childitem -recurse
   displayName: 'Check directory'
 
-- script: 
+- powershell: 
     dir
     powershell -command "import-module Get-BusinessHoursElapsed.psm1"'
   displayName: 'import module'
-- script: 
+- powershell: 
     Get-BusinessHoursElapsed -FirstDate $([datetime]"2019-03-19 11:06:16 PM") -LastDate $([datetime]"2019-03-22 11:06:16 PM") -BusinessHours "9,17"​ -StatutoryHolidays $allHolidays -Verbose
   displayName: 'Run a multi-line script'
