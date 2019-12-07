@@ -12,6 +12,7 @@ pool:
 steps:
 
 - powershell: 
+    get-childitem "Get-BusinessHoursElapsed.psm1"
     import-module .\Get-BusinessHoursElapsed.psm1
     Get-BusinessHoursElapsed -FirstDate $([datetime]"2019-03-19 11:06:16 PM") -LastDate $([datetime]"2019-03-22 11:06:16 PM") -BusinessHours "9,17"​ -StatutoryHolidays $allHolidays -Verbose
   displayName: 'Calculating Business hours'
