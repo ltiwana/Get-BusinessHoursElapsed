@@ -19,4 +19,4 @@ steps:
   displayName: 'import module'
 - powershell: 
     Get-BusinessHoursElapsed -FirstDate $([datetime]"2019-03-19 11:06:16 PM") -LastDate $([datetime]"2019-03-22 11:06:16 PM") -BusinessHours "9,17"​ -StatutoryHolidays $allHolidays -Verbose
-  displayName: 'Run a multi-line script'
+  displayName: 'Calculating Business hours'
